@@ -146,7 +146,27 @@
                 <h2 class="title-section text-center char-split white-text">Nuestra Cobertura Global</h2>
                 <p class="map-intro line-split white-text fade-in-up delay-1">Explora nuestro mapa interactivo de alta resolución. Combina datos satelitales **TEMPO** con estaciones terrestres para una visión sin precedentes.</p>
 
+                <!--MAPA-->
                  <div id="map"></div>
+                <!-- Panel flotante de filtros -->
+                  <div id="panel-filtros">
+                    <h3>Filtros</h3>
+                     <select id="filtro">
+                        <option value="all">AQI General</option>
+                        <option value="ozono">Ozono (O₃)</option>
+                        <option value="pm25">PM2.5</option>
+                        <option value="pm10">PM10</option>
+                        <option value="co">Monóxido de Carbono (CO)</option>
+                     </select>
+                  </div>
+
+                <!-- Panel flotante de información -->
+                 <div id="panel-info">
+                   <h3>Información</h3>
+                  <div id="info-detalles">
+                   <p>Selecciona un marcador para ver detalles...</p>
+                  </div>
+                 </div>
 
                 <button id="btn-mapa" class="cta-button fade-in-up delay-3">Acceder al Mapa <i class="fas fa-map-marked-alt"></i></button>
             </div>
@@ -176,4 +196,5 @@
      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>1
 </body>
+
 </html>
