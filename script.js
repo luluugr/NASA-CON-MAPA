@@ -448,83 +448,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 //Mapa//
-let mapInitialized = false;
+let mapInicializado = false;
 
-document.getElementById("btn-mapa").addEventListener("click", function() {
-  const mapDiv = document.getElementById("map");
-  mapDiv.style.display = "block"; // mostrar mapa
-
-  if (!mapInitialized) {
-    // Crear mapa
-    var map = L.map('map').setView([19.4326, -99.1332], 6);
-
-    // Tiles de MapTiler (pon tu API key real)
-    L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=y6eMi6szg7ZddVJclXiY', {
-      attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-    }).addTo(map);
-
-    // Detectar ubicación del usuario
-    map.locate({ setView: true, maxZoom: 12 });
-    map.on('locationfound', function(e) {
-      L.marker(e.latlng).addTo(map)
-        .bindPopup("Estás aquí 📍")
-        .openPopup();
-    });
-
-    // Marcadores de ejemplo (luego reemplazar con API)
-let data = [
-  {lat: 19.4326, lng: -99.1332, tipo: "ozono", valor: 0.08},
-  {lat: 20.6597, lng: -103.3496, tipo: "pm25", valor: 50},
-  {lat: 25.6866, lng: -100.3161, tipo: "co", valor: 1.2}
-];
-
-let markers = [];
-
-function getColor(tipo) {
-  switch(tipo) {
-    case "ozono": return "blue";
-    case "pm25": return "red";
-    case "pm10": return "orange";
-    case "co": return "green";
-    default: return "purple";
+const seccionMapa = document.getElementById("mapa");
+const observer = new IntersectionObserver((entries) => {
+  if(entries[0].isIntersecting && !mapInicializado) {
+    inicializarMapa();
+    mapInicializado = true;
   }
-}
+}, { threshold: 0.1 });
 
-function dibujarMarcadores(filtro="all") {
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
+observer.observe(seccionMapa);
 
-  data.forEach(p => {
-    if(filtro==="all" || p.tipo===filtro){
-      let marker = L.circleMarker([p.lat, p.lng], {
-        radius: 8,
-        color: getColor(p.tipo),
-        fillOpacity: 0.7
-      }).addTo(map);
+function inicializarMapa() {
+  var map = L.map('map').setView([19.4326, -99.1332], 6);
 
-      // Popup y panel info
-      marker.on("click", () => {
-        map.setView([p.lat, p.lng], 10); // zoom
-        document.getElementById("info-detalles").innerHTML = `
-          <b>${p.tipo.toUpperCase()}</b><br>
-          Valor: ${p.valor}
-        `;
-      });
+  L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=TU_API_KEY', {
+    attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+    tileSize: 512,
+    zoomOffset: -1
+  }).addTo(map);
 
-      markers.push(marker);
+  // Marcadores de ejemplo
+  let data = [
+    {lat: 19.4326, lng: -99.1332, tipo: "ozono", valor: 0.08},
+    {lat: 20.6597, lng: -103.3496, tipo: "pm25", valor: 50},
+    {lat: 25.6866, lng: -100.3161, tipo: "co", valor: 1.2}
+  ];
+
+  let markers = [];
+
+  function getColor(tipo) {
+    switch(tipo) {
+      case "ozono": return "blue";
+      case "pm25": return "red";
+      case "pm10": return "orange";
+      case "co": return "green";
+      default: return "purple";
     }
+  }
+
+  function dibujarMarcadores(filtro="all") {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    data.forEach(p => {
+      if(filtro==="all" || p.tipo===filtro){
+        let marker = L.circleMarker([p.lat, p.lng], {
+          radius: 8,
+          color: getColor(p.tipo),
+          fillOpacity: 0.7
+        }).addTo(map);
+
+        marker.on("click", () => {
+          map.setView([p.lat, p.lng], 10);
+          document.getElementById("info-detalles").innerHTML = `
+            <b>${p.tipo.toUpperCase()}</b><br>
+            Valor: ${p.valor}
+          `;
+        });
+
+        markers.push(marker);
+      }
+    });
+  }
+
+  dibujarMarcadores("all");
+
+  document.getElementById("filtro").addEventListener("change", (e) => {
+    dibujarMarcadores(e.target.value);
   });
 }
-
-// Cargar por defecto AQI general
-dibujarMarcadores("all");
-
-// Filtro
-document.getElementById("filtro").addEventListener("change", (e) => {
-  dibujarMarcadores(e.target.value);
-});
-
-    mapInitialized = true;
-  }
-});
 
