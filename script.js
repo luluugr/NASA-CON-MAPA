@@ -471,11 +471,60 @@ document.getElementById("btn-mapa").addEventListener("click", function() {
         .openPopup();
     });
 
-    // Ejemplo marcador dummy
-    L.circleMarker([19.4326, -99.1332], { radius: 8, color: "red" })
-      .addTo(map)
-      .bindPopup("Ejemplo AQI");
+    // Marcadores de ejemplo (luego reemplazar con API)
+let data = [
+  {lat: 19.4326, lng: -99.1332, tipo: "ozono", valor: 0.08},
+  {lat: 20.6597, lng: -103.3496, tipo: "pm25", valor: 50},
+  {lat: 25.6866, lng: -100.3161, tipo: "co", valor: 1.2}
+];
+
+let markers = [];
+
+function getColor(tipo) {
+  switch(tipo) {
+    case "ozono": return "blue";
+    case "pm25": return "red";
+    case "pm10": return "orange";
+    case "co": return "green";
+    default: return "purple";
+  }
+}
+
+function dibujarMarcadores(filtro="all") {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  data.forEach(p => {
+    if(filtro==="all" || p.tipo===filtro){
+      let marker = L.circleMarker([p.lat, p.lng], {
+        radius: 8,
+        color: getColor(p.tipo),
+        fillOpacity: 0.7
+      }).addTo(map);
+
+      // Popup y panel info
+      marker.on("click", () => {
+        map.setView([p.lat, p.lng], 10); // zoom
+        document.getElementById("info-detalles").innerHTML = `
+          <b>${p.tipo.toUpperCase()}</b><br>
+          Valor: ${p.valor}
+        `;
+      });
+
+      markers.push(marker);
+    }
+  });
+}
+
+// Cargar por defecto AQI general
+dibujarMarcadores("all");
+
+// Filtro
+document.getElementById("filtro").addEventListener("change", (e) => {
+  dibujarMarcadores(e.target.value);
+});
 
     mapInitialized = true;
   }
 });
+
