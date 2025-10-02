@@ -842,6 +842,7 @@ a:hover ~ .cursor-follower,
     color: var(--color-white);
     position: relative;
     overflow: hidden;
+    padding: 2rem 0; /* agrega espacio superior/inferior */
 }
 
 .map-intro {
@@ -852,23 +853,6 @@ a:hover ~ .cursor-follower,
     color: rgba(255, 255, 255, 0.9);
 }
 
-.map-placeholder {
-    height: 500px;
-    background: url('https://via.placeholder.com/1200x500/E0E0E0/808080?text=Mapa+Interactivo+TEMPO') no-repeat center center/cover;
-    border: 5px solid rgba(186, 184, 184, 0.32);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    color: var(--color-white);
-    font-weight: 700;
-    margin-bottom: 3rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-    transform-style: preserve-3d;
-}
 
 .map-text {
     position: relative;
@@ -876,15 +860,52 @@ a:hover ~ .cursor-follower,
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
-.map-overlay {
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 500px; /* altura fija o ajustable */
+    border: 5px solid rgba(186, 184, 184, 0.32);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+#map {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(26, 115, 232, 0.2);
     z-index: 1;
 }
+
+/* Panel flotante de filtros */
+#panel-filtros {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 200px;
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 1000;
+    color: #000; /* para que el texto sea legible */
+}
+
+/* Panel flotante de info */
+#panel-info {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 1000;
+    color: #000;
+}
+
+
 
 .parallax-effect {
     transition: background-position 0.1s linear; /* Más suave */
@@ -1374,3 +1395,4 @@ a:hover ~ .cursor-follower,
 }
 
 /* ... (Resto de estilos se mantienen) ... *
+
